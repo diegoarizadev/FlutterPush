@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.push">
+    package="dev.diegoariza.push">
    <application
         android:label="push"
         android:icon="@mipmap/ic_launcher">
