@@ -41,16 +41,17 @@ class PushServiceCustom {
         '_onbackgroundHandler - message.messageType : ${message.messageType}');
 
     //Añadir informacion al Stream.
-    _messageStreamController.sink.add(message.notification?.title ??
-        'No title'); //Espera un String y le enviamos el titulo del mensaje
+    _messageStreamController.sink.add(message.notification?.body ??
+        'No body'); //Espera un String y le enviamos el titulo del mensaje
   }
 
   //Cuando la aplicación está abierta, a la vista y en uso.
   static Future _onMessageHandler(RemoteMessage message) async {
     print('_onMessageHandler - message.messageId   : ${message.messageId}');
     print('_onMessageHandler - message.messageType : ${message.messageType}');
-    _messageStreamController.sink
-        .add(message.notification?.title ?? 'No title');
+    print(
+        '_onMessageHandler - message.messageType : ${message.data}'); //message.data son los parametros adicionales del mensaje push
+    _messageStreamController.sink.add(message.notification?.body ?? 'No body');
   }
 
   //Cuando el dispositivo está bloqueado o la aplicación no se está ejecutando. El usuario puede terminar una aplicación "deslizándola hacia afuera" a través de la interfaz de usuario del conmutador de aplicaciones en el dispositivo o cerrando una pestaña (web).
@@ -59,8 +60,10 @@ class PushServiceCustom {
         '_onMessageHandlerOpenApp - message.messageId   : ${message.messageId}');
     print(
         '_onMessageHandlerOpenApp - message.messageType : ${message.messageType}');
-    _messageStreamController.sink
-        .add(message.notification?.title ?? 'No title');
+    _messageStreamController.sink.add(message.notification?.body ?? 'No body');
+
+    print(
+        '_onMessageHandlerOpenApp - message.messageType : ${message.data}'); //message.data son los parametros adicionales del mensaje push
   }
 
   static closeStreams() {
