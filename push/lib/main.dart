@@ -11,7 +11,24 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    //Estado mas alto de la App.
+
+    super.initState();
+
+    //Suscripcion al Stream
+    PushServiceCustom.messageStreamController.listen((message) {
+      print('MyApp - message : $message');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

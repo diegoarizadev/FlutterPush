@@ -1,4 +1,6 @@
 //29:1A:8E:1B:7D:E6:91:3C:5E:6B:AC:6E:97:EC:E7:86:C4:5C:37:91
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -8,6 +10,13 @@ class PushServiceCustom {
 
   static String?
       token; //? quie3re decir opcional y hace referencia al token par ael envio de mensajes.
+
+  static StreamController<String> _messageStreamController = new StreamController
+      .broadcast(); //Este Stream nunca se va a cerrar debido a que debe escchar los mensajes push. El objectivo es transmitir informacion
+
+//Exponer el Stream para la suscripcion y escucha.
+  static Stream<String> get messageStreamController =>
+      _messageStreamController.stream;
 
   static Future initializeApp() async {
 //Push Notifications.
@@ -30,12 +39,18 @@ class PushServiceCustom {
     print('_onbackgroundHandler - message.messageId   : ${message.messageId}');
     print(
         '_onbackgroundHandler - message.messageType : ${message.messageType}');
+
+    //Añadir informacion al Stream.
+    _messageStreamController.sink.add(message.notification?.title ??
+        'No title'); //Espera un String y le enviamos el titulo del mensaje
   }
 
   //Cuando la aplicación está abierta, a la vista y en uso.
   static Future _onMessageHandler(RemoteMessage message) async {
     print('_onMessageHandler - message.messageId   : ${message.messageId}');
     print('_onMessageHandler - message.messageType : ${message.messageType}');
+    _messageStreamController.sink
+        .add(message.notification?.title ?? 'No title');
   }
 
   //Cuando el dispositivo está bloqueado o la aplicación no se está ejecutando. El usuario puede terminar una aplicación "deslizándola hacia afuera" a través de la interfaz de usuario del conmutador de aplicaciones en el dispositivo o cerrando una pestaña (web).
@@ -44,5 +59,11 @@ class PushServiceCustom {
         '_onMessageHandlerOpenApp - message.messageId   : ${message.messageId}');
     print(
         '_onMessageHandlerOpenApp - message.messageType : ${message.messageType}');
+    _messageStreamController.sink
+        .add(message.notification?.title ?? 'No title');
+  }
+
+  static closeStreams() {
+    _messageStreamController.close();
   }
 }
